@@ -30,9 +30,18 @@ class UniqueEntityValidator extends BaseValidator
     public function validate($entity, Constraint $constraint)
     {
         $violations = $this->context->getViolations();
+        
         foreach ($violations as $violation) {
-            if ($violation->getPropertyPath() == 'data.' . $constraint->fields) {
-                return;
+            if(is_array($constraint->fields)) {
+                foreach($constraint->fields as $constraint_field) {
+                    if ($violation->getPropertyPath() == 'data.' . $constraint_field) {
+                        return;
+                    }
+                }
+            } else {
+                if ($violation->getPropertyPath() == 'data.' . $constraint->fields) {
+                    return;
+                }
             }
         }
 
